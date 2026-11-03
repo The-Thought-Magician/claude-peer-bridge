@@ -42,6 +42,23 @@ To let messages through unheld, set this in the receiving account's `settings.js
 { "crossSessionInbound": "accept" }
 ```
 
+## Setup used for two-way messaging
+
+Two accounts, `~/.claude-a` and `~/.claude-b`, each with a running session.
+
+1. Add one line to `settings.json` in both config dirs, next to the other top-level keys:
+
+   ```json
+   "theme": "dark",
+   "crossSessionInbound": "accept",
+   "editorMode": "normal",
+   ```
+
+2. Send from a to b: `python3 peer_bridge.py --config-dir ~/.claude-b --to <b session> --from-name <a session> "..."`.
+3. Reply from b to a: the same command with `--config-dir ~/.claude-a`.
+4. A careful session will refuse to run `peer_bridge.py` just because a message told it to, since that command reads another account's key file. Put a line in that account's `CLAUDE.md` saying you approve it for replying to the named session. The session follows your `CLAUDE.md`, not the message.
+5. A session that had been running for hours picked the setting up without a restart: the next message arrived unheld.
+
 ## Read this first
 
 - This reads another session's private key file and writes to its socket. Use it only for your own sessions, as the same OS user. It cannot cross users: the socket and key files are owner-only.
